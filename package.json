@@ -5,7 +5,7 @@
   "scripts": {
     "start:dev": "nodemon",
     "start:prod": "tsc && node dist/server.js",
-    "start:multi": "nodemon",
+    "start:multi": "tsc && node dist/cluster.js",
     "test": "jest"
   },
   "keywords": [],
