@@ -19,12 +19,10 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const port = process.env.PORT || 4000;
 const users = [];
-// Функция для отправки JSON-ответов
 const sendResponse = (res, statusCode, data) => {
     res.writeHead(statusCode, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify(data));
 };
-// Парсинг тела запроса
 const parseRequestBody = (req) => {
     return new Promise((resolve, reject) => {
         let body = '';
@@ -41,17 +39,15 @@ const parseRequestBody = (req) => {
         });
     });
 };
-// Основной сервер
 const server = (0, http_1.createServer)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const parsedUrl = (0, url_1.parse)(req.url, true);
     const method = req.method;
     const path = parsedUrl.pathname;
-    const userId = path.split('/')[3]; // Извлечение userId из URL
-    // GET /api/users
+    const userId = path.split('/')[3];
     if (method === 'GET' && path === '/api/users') {
         sendResponse(res, 200, users);
     }
-    // GET /api/users/:userId
+    /** GET /api/users/:userId */
     else if (method === 'GET' && path.startsWith('/api/users/') && userId) {
         if (!validateUUID(userId)) {
             return sendResponse(res, 400, { message: 'Invalid user ID format' });
@@ -62,7 +58,7 @@ const server = (0, http_1.createServer)((req, res) => __awaiter(void 0, void 0, 
         }
         sendResponse(res, 200, user);
     }
-    // POST /api/users
+    /** POST /api/users */
     else if (method === 'POST' && path === '/api/users') {
         try {
             const body = yield parseRequestBody(req);
@@ -83,7 +79,7 @@ const server = (0, http_1.createServer)((req, res) => __awaiter(void 0, void 0, 
             sendResponse(res, 400, { message: 'Invalid JSON format' });
         }
     }
-    // PUT /api/users/:userId
+    /** PUT /api/users/:userId */
     else if (method === 'PUT' && path.startsWith('/api/users/') && userId) {
         if (!validateUUID(userId)) {
             return sendResponse(res, 400, { message: 'Invalid user ID format' });
@@ -105,7 +101,7 @@ const server = (0, http_1.createServer)((req, res) => __awaiter(void 0, void 0, 
             sendResponse(res, 400, { message: 'Invalid JSON format' });
         }
     }
-    // DELETE /api/users/:userId
+    /** DELETE /api/users/:userId */
     else if (method === 'DELETE' && path.startsWith('/api/users/') && userId) {
         if (!validateUUID(userId)) {
             return sendResponse(res, 400, { message: 'Invalid user ID format' });
@@ -117,16 +113,14 @@ const server = (0, http_1.createServer)((req, res) => __awaiter(void 0, void 0, 
         users.splice(userIndex, 1);
         sendResponse(res, 204, {});
     }
-    // Неизвестный маршрут
+    /** Неизвестный маршрут */
     else {
         sendResponse(res, 404, { message: 'Resource not found' });
     }
 }));
-// Запуск сервера
 server.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
-// Валидация UUID
 function validateUUID(id) {
     const regex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
     return regex.test(id);

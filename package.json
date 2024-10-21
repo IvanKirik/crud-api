@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start:dev": "nodemon -r ts-node/register src/server.ts",
+    "start:dev": "nodemon",
     "start:prod": "tsc && node dist/server.js",
+    "start:multi": "nodemon",
     "test": "jest"
   },
   "keywords": [],
